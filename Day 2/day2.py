@@ -37,6 +37,6 @@ def check_password2(policy, password):
 
 result2 = sum([ check_password2(e[0], e[1]) for e in data ])
 
-print('[DAY 2]: Part 2')
+print('\n[DAY 2]: Part 2')
 print('Total valid passwords: {}'.format(result2))
 
