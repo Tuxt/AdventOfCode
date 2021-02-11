@@ -19,11 +19,15 @@ for line in data:
     # Content
     for child in content.split(','):
         # Get rid off number
-        _, child = child.strip().split(' ', 1)
+        num, child = child.strip().split(' ', 1)
         # Get rid off bag/bags
         child, _ = child.rsplit(' ', 1)
 
-        G.add_edge(container, child)
+        try:
+            G.add_edge(container, child, weight=int(num))
+        except ValueError:
+            # No bags inside
+            pass
 
 roots = [ n for n,d in G.in_degree() if d==0 ]
 
@@ -36,3 +40,18 @@ bags = set( paths_elements )
 print('[DAY 7]: Part 1')
 print('Bags that can contain at least one {}: {}'.format( my_bag, len(bags) ))
 
+
+def count_bag(G, bag):
+    contained_bags = 0
+    for edge in G.edges(bag):
+        contained_bags += count_edge(G, edge)
+    return contained_bags
+
+def count_edge(G, edge):
+    weight = int(G.edges[edge]['weight'])
+    return weight + weight * count_bag(G, edge[1])
+
+total_bags_inside = count_bag(G, my_bag)
+
+print('\n[DAY 7]: Part 2')
+print('Total bags contained in {}: {}'.format(my_bag, total_bags_inside))
