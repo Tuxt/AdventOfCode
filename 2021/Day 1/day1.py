@@ -21,5 +21,5 @@ sum_windows = np.sum(sliding_windows, axis=1)
 
 increments = np.sum((sum_windows[1:] - sum_windows[:-1]) > 0)
 
-print('[DAY 1]: Part 2')
+print('\n[DAY 1]: Part 2')
 print('Number of times the sum of measurements in this sliding window increases: {}'.format(increments))
