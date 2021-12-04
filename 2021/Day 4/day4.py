@@ -40,9 +40,32 @@ unmarked_elements = winner_board[np.logical_not(winner_mask)]
 print('[DAY 4]: Part 1')
 print('Winner Board:\n{}\n'.format(winner_board))
 print('Winner Mask:\n{}\n'.format(winner_mask))
-print('Unmarked_elements:\n{}\n'.format(unmarked_elements))
-print('Last random number called: {}\n'.format(current_number))
+print('Unmarked_elements:\n{} = {}'.format(unmarked_elements, np.sum(unmarked_elements)))
+print('Last random number called: {}'.format(current_number))
 print('Solution: {} * {} = {}'.format(np.sum(unmarked_elements), current_number, np.sum(unmarked_elements)*current_number))
 
 
 
+almost_all_has_bingo = lambda masks, remaining: np.sum([board_has_bingo(mask) for mask in masks]) == (len(masks)-remaining)
+
+while not almost_all_has_bingo(board_masks, 1):
+    current_number, *random_numbers = random_numbers
+    board_masks = update_masks(boards, board_masks, current_number)
+
+# Get the loser board
+loser_index_mask = [not board_has_bingo(mask) for mask in board_masks]
+# Keep playing until the loser board ends
+while not almost_all_has_bingo(board_masks, 0):
+    current_number, *random_numbers = random_numbers
+    board_masks = update_masks(boards, board_masks, current_number)
+
+loser_board = boards[loser_index_mask]
+loser_mask = board_masks[loser_index_mask]
+unmarked_elements = loser_board[np.logical_not(loser_mask)]
+
+print('\n\n[DAY 4]: Part 2')
+print('Loser Board:\n{}\n'.format(loser_board))
+print('Loser Mask:\n{}\n'.format(loser_mask))
+print('Unmarked_elements:\n{} = {}'.format(unmarked_elements, np.sum(unmarked_elements)))
+print('Last random number called: {}'.format(current_number))
+print('Solution: {} * {} = {}'.format(np.sum(unmarked_elements), current_number, np.sum(unmarked_elements)*current_number))
