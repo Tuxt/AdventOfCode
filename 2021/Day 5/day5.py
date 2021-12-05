@@ -26,3 +26,19 @@ def draw_line(vent_map, coords):
 
 print('[DAY 5]: Part 1')
 print('Points with at least 2 line overlaps: {}'.format(np.sum(vents_map > 1)))
+
+
+diag_data = data[np.logical_not(list(map(is_hv, data)))]
+
+def draw_diag(vent_map, coords):
+    x_idx = np.arange(coords[0, 0], coords[1, 0] + 1) if coords[0, 0] <= coords[1, 0] else \
+            np.arange(coords[0, 0], coords[1, 0] - 1, -1)
+    y_idx = np.arange(coords[0, 1], coords[1, 1] + 1) if coords[0, 1] <= coords[1, 1] else \
+            np.arange(coords[0, 1], coords[1, 1] - 1, -1)
+
+    vent_map[x_idx, y_idx] += 1
+
+[draw_diag(vents_map, coords) for coords in diag_data]
+
+print('\n[DAY 5]: Part 2')
+print('Points with at least 2 line overlaps: {}'.format(np.sum(vents_map > 1)))
