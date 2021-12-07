@@ -12,3 +12,9 @@ best_cost = np.min([cost(data, i) for i in range(data.shape[0])])
 print('[DAY 7]: Part 1')
 print('Cheapest cost to align: {}'.format(best_cost))
 
+cost = lambda data, target: np.sum([np.sum(np.arange(np.abs(e - target) + 1)) for e in data])
+
+best_cost = np.min([cost(data, i) for i in range(data.shape[0])])
+
+print('\n[DAY 7]: Part 2')
+print('Cheapest cost to align: {}'.format(best_cost))
