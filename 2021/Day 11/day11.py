@@ -21,6 +21,14 @@ def step(data, highlighted_items=None, highlights=0):
 
     return step(data, items_to_highlight | highlighted_items, highlights)
 
+
 STEPS = 100
 print('[DAY 11]: Part 1')
 print('Flashes in {} steps: {}'.format(STEPS, np.sum([step(data) for _ in range(STEPS)])))
+
+data = np.genfromtxt(input_file, dtype=int, delimiter=[1] * 10)
+steps = 0
+while step(data) != 100: steps += 1
+
+print('\n[DAY 11]: Part 2')
+print('All flashes synchronized in step: {}'.format(steps + 1))
