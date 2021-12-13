@@ -38,4 +38,16 @@ paper = fold_paper(paper, first_fold)
 print('[DAY 13]: Part 1')
 print('Visible dots after completing the first fold: {}'.format(np.sum(paper)))
 
+for fold in folds:
+    paper = fold_paper(paper, fold)
+
+paper = paper.astype(str)
+paper[paper == 'True'] = '#'
+paper[paper == 'False'] = '.'
+
+print('\n[DAY 13]: Part 2')
+print('Code to activate the infrared thermal camera:')
+
+for line in paper.T:
+    print(''.join(line))
 
