@@ -1,3 +1,5 @@
+import math
+
 input_file = 'input'
 
 with open(input_file, 'r') as f:
@@ -47,6 +49,7 @@ def read_packet(msg):
 
 *data, _ = read_packet(data)
 
+
 def sum_version(packets):
     version, type_id, content = packets
     if type_id == 4:
@@ -58,3 +61,23 @@ def sum_version(packets):
 print('[DAY 16]: Part 1')
 print('Sum of all version numbers: {}'.format(sum_version(data)))
 
+
+calc = {
+    0: lambda packets: sum([calc_expression(e) for e in packets]),
+    1: lambda packets: math.prod([calc_expression(e) for e in packets]),
+    2: lambda packets: min([calc_expression(e) for e in packets]),
+    3: lambda packets: max([calc_expression(e) for e in packets]),
+    4: lambda packets: packets,
+    5: lambda packets: int(calc_expression(packets[0]) > calc_expression(packets[1])),
+    6: lambda packets: int(calc_expression(packets[0]) < calc_expression(packets[1])),
+    7: lambda packets: int(calc_expression(packets[0]) == calc_expression(packets[1]))
+}
+
+
+def calc_expression(packets):
+    version, type_id, content = packets
+    return calc[type_id](content)
+
+
+print('\n[DAY 16]: Part 2')
+print('Evaluated expression: {}'.format(calc_expression(data)))
