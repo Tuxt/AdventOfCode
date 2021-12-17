@@ -19,7 +19,7 @@ def simulate_throw(start_speed_x, start_speed_y, target_x, target_y):
     speed = (start_speed_x, start_speed_y)
 
     trace = []
-    while (probe[0] < target_x[0] or probe[1] > target_y[0]) and (probe[0] < target_x[1] and probe[1] > target_y[1]):
+    while (probe[0] < target_x[0] or probe[1] > target_y[1]) and (probe[0] <= target_x[1] and probe[1] >= target_y[0]):
         probe, speed = simulation_step(*probe, *speed)
         trace.append(probe)
     return target_x[0] <= probe[0] <= target_x[1] and target_y[0] <= probe[1] <= target_y[1], trace
@@ -67,4 +67,18 @@ for x in range(min_x, max_x):
 
 print('[DAY 17]: Part 1')
 print('Highest y value that can be reach: {}'.format(highest_y))
+
+
+# Recalc min_y to get the total number of initial velocities (including negative values)
+min_y = target_y[0]
+valid_initial_velocities = 0
+
+for x in range(min_x, max_x):
+    for y in range(min_y, max_y):
+        success, _ = simulate_throw(x, y, target_x, target_y)
+        if success:
+            valid_initial_velocities += 1
+
+print('\n[DAY 17]: Part 2')
+print('Total valid initial velocities: {}'.format(valid_initial_velocities))
 
