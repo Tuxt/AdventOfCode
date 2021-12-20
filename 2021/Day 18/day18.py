@@ -1,5 +1,6 @@
 import numpy as np
 from binarytree import Node
+from itertools import permutations
 
 input_file = 'input'
 
@@ -125,3 +126,11 @@ for e in data[1:]:
 
 print('[DAY 18]: Part 1')
 print('Magnitude of the sum: {}'.format(magnitude(root)))
+
+sums_index = list(permutations(list(range(len(data))), 2))
+
+# This is going to take a minute...
+magnitudes = [magnitude(add_reduce(data[index1], data[index2])) for index1, index2 in sums_index]
+
+print('\n[DAY 18]: Part 2')
+print('Largest magnitude of any sum of two different numbers: {}'.format(max(magnitudes)))
