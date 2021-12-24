@@ -44,3 +44,9 @@ for _ in range(STEPS1):
 print('[DAY 20]: Part 1')
 print('Lit pixels after {} steps: {}'.format(STEPS1, np.sum(img == '1')))
 
+STEPS2 = 50
+for _ in range(STEPS2-STEPS1):
+    img = step(img, algorithm)
+
+print('\n[DAY 20]: Part 2')
+print('Lit pixels after {} steps: {}'.format(STEPS2, np.sum(img == '1')))
