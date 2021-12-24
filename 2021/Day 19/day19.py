@@ -43,11 +43,11 @@ def search_relations(tree=None, root=None):
     if tree is None:
         tree = Tree()
     if root is None:
-        root = Node(0)
+        root = Node(identifier=0)
         tree.add_node(root)
     scanners_to_be_found = [i for i in range(len(data)) if  i not in [n.tag for n in tree.all_nodes()]]
 
-    added = [tree.add_node(Node(scanner), parent=root) for scanner in scanners_to_be_found if has_12_common_beacons(data[root.tag], data[scanner])]
+    added = [tree.add_node(Node(identifier=scanner), parent=root) for scanner in scanners_to_be_found if has_12_common_beacons(data[root.tag], data[scanner])]
 
     scanners_to_be_found = [i for i in range(31) if i not in [n.tag for n in tree.all_nodes()]]
 
@@ -129,28 +129,59 @@ def transform_coords(scanner1, scanner2):
     correction = beacon1 - beacon2
     scanner2 += correction
 
-    return scanner2
+    return scanner2, correction, signs, axis_permutation
 
 
 # Build the relations tree
-def transform_coords_tree(tree):
+def transform_coords_tree(tree, distance_tree):
     for leave in tree.leaves():
         parent = tree.parent(leave.identifier)
         child = leave
 
-        new_child_data = transform_coords(data[parent.tag], data[child.tag])
+        new_child_data, correction, signs, permutation = transform_coords(data[parent.tag], data[child.tag])
         data[parent.tag] = del_dups(np.concatenate((data[parent.tag], new_child_data)))
         tree.remove_node(child.identifier)
+        distance_tree.get_node(child.tag).data = [correction, signs, permutation]
 
     if sum([leave.tag for leave in tree.leaves()]) > 0:
-        transform_coords_tree(tree)
+        transform_coords_tree(tree, distance_tree)
 
 
 tree = search_relations()       # Build the relations tree
-transform_coords_tree(tree)     # Transform coords of each scanner to the reference (first scanner)
+distance_tree = Tree(tree)      # Build a copy tree to store scanner positions
+distance_tree.get_node(0).data = [np.array([0, 0, 0]), np.array([1, 1, 1]), np.array([0, 1, 2])]
+transform_coords_tree(tree, distance_tree)     # Transform coords of each scanner to the reference (first scanner)
 
 print('[DAY 19]: Part 1')
 print('Total number of beacons: {}'.format(data[0].shape[0]))
 
+def manhattan_distance(a, b):
+    return sum(abs(e1-e2) for e1, e2 in zip(a,b))
 
 
+def calc_scanners_coords(distance_tree):
+    for node in distance_tree.leaves():
+        parent = distance_tree.parent(node.identifier)
+        if parent.tag == 0:
+            continue
+
+        # Get data
+        node_pos, _, _ = node.data
+        parent_pos, parent_signs, parent_permutation = parent.data
+
+        # Calc new data
+        node.data = [node_pos[parent_permutation] * parent_signs + parent_pos, parent_signs, parent_permutation]
+
+        # Reposition node in the tree
+        distance_tree.remove_node(node.identifier)
+        distance_tree.add_node(node, parent=distance_tree.parent(parent.identifier))
+
+        if np.max([distance_tree.depth(node.tag) for node in distance_tree.all_nodes()]) > 1:
+            calc_scanners_coords(distance_tree)
+
+calc_scanners_coords(distance_tree)
+scanner_positions = [node.data[0] for node in distance_tree.all_nodes()]
+distances_between_scanners = [manhattan_distance(pair[0], pair[1]) for pair in combinations(scanner_positions, r=2)]
+
+print('\n[DAY 19]: Part 2')
+print('Max manhattan distance: {}'.format(np.max(distances_between_scanners)))
