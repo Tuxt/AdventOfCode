@@ -20,3 +20,20 @@ data['Round'] = data['Outcome'] + data['Shape']
 
 print('[DAY 2]: Part 1')
 print('Score according to the strategy guide: {:.0f}'.format(data.sum()['Round']))
+
+
+# Outcome points
+data.loc[data.Me == 'X', 'Outcome'] = 0
+data.loc[data.Me == 'Y', 'Outcome'] = 3
+data.loc[data.Me == 'Z', 'Outcome'] = 6
+
+# Shape points
+data.loc[((data.Elf == 'A') & (data.Me == 'Y')) | ((data.Elf == 'B') & (data.Me == 'X')) | ((data.Elf == 'C') & (data.Me == 'Z')), 'Shape'] = 1
+data.loc[((data.Elf == 'A') & (data.Me == 'Z')) | ((data.Elf == 'B') & (data.Me == 'Y')) | ((data.Elf == 'C') & (data.Me == 'X')), 'Shape'] = 2
+data.loc[((data.Elf == 'A') & (data.Me == 'X')) | ((data.Elf == 'B') & (data.Me == 'Z')) | ((data.Elf == 'C') & (data.Me == 'Y')), 'Shape'] = 3
+
+# Total round points
+data['Round'] = data['Outcome'] + data['Shape']
+
+print('\n[DAY 2]: Part 2')
+print('Score according to the new strategy guide: {:.0f}'.format(data.sum()['Round']))
