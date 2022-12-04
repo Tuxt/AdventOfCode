@@ -12,8 +12,13 @@ data = [
     for line in data
 ]
 
-ranges_contained_in_other = [ set(pair[0]).issubset(set(pair[1])) or set(pair[1]).issubset(set(pair[0])) for pair in data]
+ranges_contained_in_other = [set(pair[0]).issubset(set(pair[1])) or set(pair[1]).issubset(set(pair[0])) for pair in data]
 
 print('[DAY 4]: Part 1')
 print('Pairs with ranges fully contained: {}'.format(sum(ranges_contained_in_other)))
 
+
+ranges_overlapped = [not set(pair[0]).isdisjoint(set(pair[1])) for pair in data]
+
+print('\n[DAY 4]: Part 2')
+print('Pairs with ranges overlapped: {}'.format(sum(ranges_overlapped)))
