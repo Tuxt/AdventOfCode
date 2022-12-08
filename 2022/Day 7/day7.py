@@ -48,7 +48,6 @@ def calc_weight_node(tree, node):
 tree = build_tree(data)
 calc_weight_node(tree, tree.nodes.get('/'))
 
-
 print('[DAY 7]: Part 1')
 print('Sum of all directories with a size up to 100000: {}'.format(sum([
     node.data['size']
@@ -56,14 +55,14 @@ print('Sum of all directories with a size up to 100000: {}'.format(sum([
     if node.data['type'] == 'dir' and node.data['size'] <= 100_000
 ])))
 
+
 SYSTEM_SIZE = 70_000_000
 UPDATE_SIZE = 30_000_000
 needed_space = UPDATE_SIZE - (SYSTEM_SIZE - tree.nodes['/'].data['size'])
-directories = {
-    node.identifier: node.data['size']
-    for node in tree.all_nodes_itr()
-    if node.data['type'] == 'dir' and node.data['size'] >= needed_space
-}
 
 print('\n[DAY 7]: Part 2')
-print('Directory to delete: {} ({})'.format(min(directories, key=directories.get), min(directories.values())))
+print('Size of directory to delete: {}'.format(min([
+    node.data['size']
+    for node in tree.all_nodes_itr()
+    if node.data['type'] == 'dir' and node.data['size'] >= needed_space
+])))
