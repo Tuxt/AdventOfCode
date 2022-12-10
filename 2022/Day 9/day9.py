@@ -11,28 +11,39 @@ MOVEMENTS = {
 with open(FILENAME) as f:
     data = f.read().splitlines()
 
+# Initial state: 2 knots
 visited_by_tail = {(0, 0): 1}
-head = np.array([0, 0])                 # Current coords for head
-tail = np.array([0, 0])                 # Current coords for tail
+total_knots = 2
+knots = [np.array([0, 0]) for _ in range(total_knots)]
 
 
 def step(direction):
-    global head
-    global tail
+    global knots
     # Move head
-    head += MOVEMENTS[direction]
-    # Move tail
-    distance = head - tail
-    if np.all(np.abs(distance) < 2):    # Touching: don't move Tail
-        return
-    else:
-        tail = tail + (distance > 0) - (distance < 0)
-        visited_by_tail[tuple(tail)] = visited_by_tail.get(tuple(tail), 0) + 1
-        return
+    knots[0] += MOVEMENTS[direction]
+    # Move next knots
+    for i in range(1, len(knots)):
+        distance = knots[i-1] - knots[i]
+        if np.all(np.abs(distance) < 2):    # Touching: don't move Tail
+            continue
+        else:
+            knots[i] = knots[i] + (distance > 0) - (distance < 0)
+            continue
+    visited_by_tail[tuple(knots[-1])] = visited_by_tail.get(tuple(knots[-1]), 0) + 1
 
 
 [step(line.split()[0]) for line in data for _ in range(int(line.split()[1]))]
 
 
 print('[DAY 9]: Part 1')
+print('Positions visited by the tail: {}'.format(len(visited_by_tail)))
+
+# Initial state: 10 knots
+visited_by_tail = {(0, 0): 1}
+total_knots = 10
+knots = [np.array([0, 0]) for _ in range(total_knots)]
+
+[step(line.split()[0]) for line in data for _ in range(int(line.split()[1]))]
+
+print('\n[DAY 9]: Part 2')
 print('Positions visited by the tail: {}'.format(len(visited_by_tail)))
