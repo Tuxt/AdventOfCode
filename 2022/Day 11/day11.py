@@ -70,5 +70,5 @@ if __name__ == '__main__':
     # Get the inspected items for each monkey (sorted)
     inspected_items = sorted(map(lambda e: e.inspected_items, monkeys), reverse=True)
 
-    print('[DAY 11]: Part 2')
+    print('\n[DAY 11]: Part 2')
     print('Monkey business: {}'.format(inspected_items[0] * inspected_items[1]))

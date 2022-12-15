@@ -8,7 +8,6 @@ with open(FILENAME) as f:
     data = np.array(data)
 
 DIM_i, DIM_j = data.shape
-G = nx.MultiDiGraph()
 
 def calc_elevation(char_1, char_2):
     char_1 = 'a' if char_1 == 'S' else char_1
@@ -29,11 +28,26 @@ def add_edges(data, G, i, j):
         G.add_edge('{}-{}'.format(i, j), '{}-{}'.format(i, j + 1))
 
 
+def calc_path(G, start, end):
+    try:
+        path = nx.shortest_path(G, '{}-{}'.format(*start), '{}-{}'.format(*end))
+        return path
+    except nx.exception.NetworkXNoPath:
+        return None
+
+
+G = nx.MultiDiGraph()
+[add_edges(data, G, i, j) for i in range(DIM_i) for j in range(DIM_j)]
+
 start = np.argwhere(data == 'S')[0]
 end = np.argwhere(data == 'E')[0]
-
-[add_edges(data, G, i, j) for i in range(DIM_i) for j in range(DIM_j)]
-path = nx.shortest_path(G, '{}-{}'.format(*start), '{}-{}'.format(*end))
+path = calc_path(G, start, end)
 
 print('[DAY 12]: Part 1')
 print('Steps required: {}'.format(len(path) - 1))
+
+steps = [calc_path(G, start, end) for start in np.argwhere(data == 'a')]
+
+print('\n[DAY 12]: Part 2')
+print('Steps required: {}'.format(min([len(step) - 1 for step in steps if step is not None])))
+
