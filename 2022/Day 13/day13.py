@@ -1,6 +1,12 @@
 import numpy as np
+from functools import cmp_to_key
+from copy import deepcopy
 
 FILENAME = 'input'
+DIVIDER_PACKETS = [
+    [[2]],
+    [[6]]
+]
 
 with open(FILENAME) as f:
     data = f.read().split('\n\n')
@@ -37,3 +43,24 @@ pairs_in_the_right_order = [compare(*pair) for pair in data]
 
 print('[DAY 13]: Part 1')
 print('Sum of indices or right pairs: {}'.format((np.argwhere(pairs_in_the_right_order) + 1).sum()))
+
+
+def comparator(left, right):
+    cmp = compare(deepcopy(left), deepcopy(right))
+    if cmp is None:
+        return 0
+    else:
+        return -1 if cmp else 1
+
+
+with open(FILENAME) as f:
+    data = f.read().replace('\n\n', '\n').splitlines()
+    data = [eval(line) for line in data]
+
+data += DIVIDER_PACKETS
+
+data = sorted(data, key=cmp_to_key(comparator))
+divider_idx = [i + 1 for i, e in enumerate(data) if e in DIVIDER_PACKETS]
+
+print('\n[DAY 13]: Part 2')
+print('Decoder key: {}'.format(divider_idx[0] * divider_idx[1]))
